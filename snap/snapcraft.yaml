@@ -1,0 +1,22 @@
+name: ros2-talker-listener
+version: 0.1
+summary: ROS2 Talker/Listener Example
+description: |
+  This example consists of the ROS2 underlay as well as an example talker and
+  listener.
+
+grade: devel
+confinement: devmode
+
+parts:
+  ros2-examples:
+    source: https://github.com/ros2/examples.git
+    plugin: ament
+    version: release-beta3
+
+apps:
+  talker:
+    command: ros2 run examples_rclcpp_minimal_publisher publisher_lambda
+
+  listener:
+    command: ros2 run examples_rclpy_minimal_subscriber subscriber_lambda
