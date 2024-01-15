@@ -1,0 +1,9 @@
+name: Monthly
+on:
+  schedule:
+    - cron: '0 0 1 * *'
+  workflow_dispatch:
+
+jobs:
+  main-snap:
+    uses: snapcraft-docs/ros2-talker-listener/.github/workflows/snap.yaml@main
