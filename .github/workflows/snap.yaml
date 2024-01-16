@@ -45,7 +45,7 @@ jobs:
                     check_topic() {
                         local topic_name=$1
                         local pub_count=$(ros2 topic info /$topic_name | grep "Publisher count:" | awk '{print $3}')
-                        local sub_count=$(ros2 topic info /$topic_name | grep "Subscription count:" | awk '{print $3}')
+                        local sub_count=$(ros2 topic info /$topic_name | grep "Subscriber count:" | awk '{print $3}')
                         if [ "$pub_count" -gt 0 ] && [ "$sub_count" -gt 0 ]; then
                             echo "$topic_name has publishers and subscribers."
                         else
@@ -61,7 +61,7 @@ jobs:
 
                     check_node talker
                     check_node listener
-                    check_topic chatter talker listener
+                    check_topic chatter
                     kill $pid
 
                     echo "All checks passed successfully."
