@@ -12,26 +12,28 @@ on:
 
 jobs:
   main-snap:
-    uses: ubuntu-robotics/snap_workflows/.github/workflows/build-install-test-snap.yaml@F_add_snapcraft_channel_option
+    uses: ubuntu-robotics/snap_workflows/.github/workflows/build-install-test-snap-lxc.yaml@F_add_lxc_template
     with:
-      ubuntu-image: ubuntu-18.04
-      branch-name: master
+      lxc-image: ubuntu:18.04
       snapcraft-channel: 7.x
-      snap-name: ros2-talker-listener
+      branch-name: master
+      snap-name: ros-talker-listener
       snap-install-args: --devmode
       test-script: |
                     #!/bin/bash
-                    sudo apt update && sudo apt install curl gnupg2 lsb-release
-                    sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key  -o /usr/share/keyrings/ros-archive-keyring.gpg
 
-                    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+                    ## Install ROS
+                    sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 
+                    sudo apt install curl
+                    curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
                     sudo apt update
-                    sudo apt install ros-dashing-ros-base
+                    sudo apt install -y ros-melodic-ros-base
 
+                    source /opt/ros/melodic/setup.bash
                     check_node() {
                         local node_name=$1
-                        ros2-cli.ros2 node list | grep -q "/$node_name"
+                        rosnode list | grep -q "/$node_name"
                         if [ $? -eq 0 ]; then
                             echo "$node_name is running."
                         else
@@ -39,6 +41,7 @@ jobs:
                             exit 1
                         fi
                     }
+
                     check_topic() {
                         local topic_name=$1
                         local pub_count=$(ros2-cli.ros2 topic info /$topic_name | grep "Publisher count:" | awk '{print $3}')
@@ -51,11 +54,14 @@ jobs:
                         fi
                     }
 
-                    ros2-talker-listener &
+                    ros-talker-listener &
                     pid=$!
+
+                    sleep 5
+
                     check_node talker
                     check_node listener
-                    check_topic chatter
+                    check_topic chatter talker listener
                     kill $pid
 
                     echo "All checks passed successfully."
