@@ -17,20 +17,20 @@ jobs:
       lxc-image: ubuntu:18.04
       snapcraft-channel: 7.x
       branch-name: master
-      snap-name: ros-talker-listener
+      snap-name: ros2-talker-listener
       snap-install-args: --devmode
       test-script: |
                     #!/bin/bash
 
                     ## Install ROS
-                    sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
-
-                    sudo apt install curl
-                    curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
+                    sudo apt update && sudo apt install curl gnupg2 lsb-release
+                    sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key  -o /usr/share/keyrings/ros-archive-keyring.gpg
+                    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
                     sudo apt update
-                    sudo apt install -y ros-melodic-ros-base
+                    sudo apt install -y ros-dashing-ros-base
 
-                    source /opt/ros/melodic/setup.bash
+                    source /opt/ros/dashing/setup.bash
+
                     check_node() {
                         local node_name=$1
                         rosnode list | grep -q "/$node_name"
@@ -54,7 +54,7 @@ jobs:
                         fi
                     }
 
-                    ros-talker-listener &
+                    ros2-talker-listener &
                     pid=$!
 
                     sleep 5
