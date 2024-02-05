@@ -6,4 +6,4 @@ on:
 
 jobs:
   main-snap:
-    uses: snapcraft-docs/ros2-talker-listener/.github/workflows/snap.yaml@main
+    uses: snapcraft-docs/ros2-talker-listener/.github/workflows/snap.yaml@master
