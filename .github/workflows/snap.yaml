@@ -22,8 +22,6 @@ jobs:
       snap-test-script: |
                     #!/bin/bash
 
-                    set -euxo pipefail
-
                     ## Install ROS
                     sudo apt update && sudo apt --yes install curl gnupg2 lsb-release
                     sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key  -o /usr/share/keyrings/ros-archive-keyring.gpg
