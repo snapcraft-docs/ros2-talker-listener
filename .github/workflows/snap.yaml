@@ -29,7 +29,9 @@ jobs:
                     sudo apt update
                     sudo apt install --yes ros-dashing-ros-base
 
+                    set +u
                     source /opt/ros/dashing/setup.bash
+                    set -u
 
                     check_node() {
                         local node_name=$1
