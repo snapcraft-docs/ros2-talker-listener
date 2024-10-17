@@ -13,14 +13,13 @@ on:
 
 jobs:
   main-snap:
-    uses: ubuntu-robotics/snap_workflows/.github/workflows/snap-lxc.yaml@main
+    uses: canonical/robotics-actions-workflows/.github/workflows/snap.yaml@main
     with:
-      lxc-image: ubuntu:18.04
+      lxd-image: ubuntu:18.04
       snapcraft-channel: 7.x
-      branch-name: master
-      snap-name: ros2-talker-listener
+      git-ref: master
       snap-install-args: --devmode
-      test-script: |
+      snap-test-script: |
                     #!/bin/bash
 
                     ## Install ROS
