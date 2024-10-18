@@ -13,24 +13,25 @@ on:
 
 jobs:
   main-snap:
-    uses: ubuntu-robotics/snap_workflows/.github/workflows/snap-lxc.yaml@main
+    uses: canonical/robotics-actions-workflows/.github/workflows/snap.yaml@main
     with:
-      lxc-image: ubuntu:18.04
+      lxd-image: ubuntu:18.04
       snapcraft-channel: 7.x
-      branch-name: master
-      snap-name: ros2-talker-listener
+      git-ref: master
       snap-install-args: --devmode
-      test-script: |
+      snap-test-script: |
                     #!/bin/bash
 
                     ## Install ROS
-                    sudo apt update && sudo apt install curl gnupg2 lsb-release
+                    sudo apt update && sudo apt --yes install curl gnupg2 lsb-release
                     sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key  -o /usr/share/keyrings/ros-archive-keyring.gpg
                     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
                     sudo apt update
-                    sudo apt install -y ros-dashing-ros-base
+                    sudo apt install --yes ros-dashing-ros-base
 
+                    set +u
                     source /opt/ros/dashing/setup.bash
+                    set -u
 
                     check_node() {
                         local node_name=$1
